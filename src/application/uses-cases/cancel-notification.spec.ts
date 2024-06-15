@@ -3,17 +3,14 @@ import { CancelNotification } from './cancel-notification';
 import { Notification } from '@application/entities/notification';
 import { Content } from '@application/entities/content';
 import { NotificationNotFoundError } from './errors/notification-not-found-error';
+import { makeNotification } from '@test/factories/notifications-factory';
 
 describe('Cancel Notification', () => {
   it('should be able to cancel a notification', async () => {
     const notificationRepository = new InMemoryNotificationRepository();
     const cancelNotification = new CancelNotification(notificationRepository);
 
-    const notification = new Notification({
-      category: 'social',
-      content: new Content('New friend request'),
-      recipientId: 'example-recipient-id',
-    });
+    const notification = makeNotification();
 
     await notificationRepository.create(notification);
 
@@ -27,7 +24,7 @@ describe('Cancel Notification', () => {
   it('should not be able to cancle a non existing notification', async () => {
     const notificationRepository = new InMemoryNotificationRepository();
     const cancelNotification = new CancelNotification(notificationRepository);
-    
+
     expect(() => {
       return cancelNotification.execute({
         notificationId: 'fake-notification-id',
